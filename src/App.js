@@ -48,21 +48,32 @@ const average = (arr) =>
 export default function App() {
 	// State Prop Drilling
 	const [movies, setMovies] = useState(tempMovieData);
+	const [watched, setWatched] = useState(tempWatchedData);
 
 	return (
 		<>
-			<NavBar movies={movies} />
-			<MainFeed movies={movies} />
+			<NavBar>
+				<SearchBar />
+				<ResultStats movies={movies} />
+			</NavBar>
+			<MainFeed>
+				<Box>
+					<SearchResults movies={movies} />
+				</Box>
+				<Box>
+					<WatchedSummary watched={watched} />
+					<WatchedResults watched={watched} />
+				</Box>
+			</MainFeed>
 		</>
 	);
 }
 
-const NavBar = ({ movies }) => {
+const NavBar = ({ children }) => {
 	return (
 		<nav className="nav-bar">
 			<Logo />
-			<SearchBar />
-			<ResultStats movies={movies} />
+			{children}
 		</nav>
 	);
 };
@@ -99,27 +110,22 @@ const ResultStats = ({ movies }) => {
 	);
 };
 
-const MainFeed = ({ movies }) => {
-	return (
-		<main className="main">
-			<SearchResultsBox movies={movies} />
-			<WatchedListBox />
-		</main>
-	);
+const MainFeed = ({ children }) => {
+	return <main className="main">{children}</main>;
 };
 
-const SearchResultsBox = ({ movies }) => {
-	const [isOpen1, setIsOpen1] = useState(true);
+const Box = ({ children }) => {
+	const [isOpen, setIsOpen] = useState(true);
 
 	return (
 		<div className="box">
 			<button
 				className="btn-toggle"
-				onClick={() => setIsOpen1((open) => !open)}
+				onClick={() => setIsOpen((open) => !open)}
 			>
-				{isOpen1 ? "-" : "+"}
+				{isOpen ? "-" : "+"}
 			</button>
-			{isOpen1 && <SearchResults movies={movies} />}
+			{isOpen && children}
 		</div>
 	);
 };
@@ -146,28 +152,6 @@ const Movie = ({ movie }) => {
 				</p>
 			</div>
 		</li>
-	);
-};
-
-const WatchedListBox = () => {
-	const [watched, setWatched] = useState(tempWatchedData);
-	const [isOpen2, setIsOpen2] = useState(true);
-
-	return (
-		<div className="box">
-			<button
-				className="btn-toggle"
-				onClick={() => setIsOpen2((open) => !open)}
-			>
-				{isOpen2 ? "-" : "+"}
-			</button>
-			{isOpen2 && (
-				<>
-					<WatchedSummary watched={watched} />
-					<WatchedResults watched={watched} />
-				</>
-			)}
-		</div>
 	);
 };
 
