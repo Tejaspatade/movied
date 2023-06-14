@@ -63,9 +63,9 @@ export default function App() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [query, setQuery] = useState("spider-verse");
-	const [movies, setMovies] = useState(tempMovieData);
+	const [movies, setMovies] = useState([]);
 	const [selectedId, setSelectedId] = useState(null);
-	const [watched, setWatched] = useState(tempWatchedData);
+	const [watched, setWatched] = useState([]);
 
 	// Handlers for selecting/deselecting movie
 	const handleMovieSelect = (id) => {
@@ -147,6 +147,8 @@ export default function App() {
 						<MovieInfo
 							selectedId={selectedId}
 							onMovieClose={handleMovieClose}
+							onAddWatched={handleAddWatched}
+							watched={watched}
 						/>
 					) : (
 						<>

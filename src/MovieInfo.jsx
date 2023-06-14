@@ -4,11 +4,18 @@ import Ratings from "./Ratings";
 import { KEY, Loader } from "./App";
 
 // Selected Movie with all details
-export const MovieInfo = ({ selectedId, onMovieClose }) => {
+export const MovieInfo = ({
+	selectedId,
+	watched,
+	onMovieClose,
+	onAddWatched,
+}) => {
 	// State to hold current movie with all info
 	const [movie, setMovie] = useState("tt1596363");
 	const [isLoading, setIsLoading] = useState(false);
+	const [userRating, setUserRating] = useState("");
 
+	// Derived States
 	const {
 		Poster,
 		Title,
@@ -17,9 +24,14 @@ export const MovieInfo = ({ selectedId, onMovieClose }) => {
 		Genre,
 		imdbRating,
 		Plot,
+		Year,
 		Actors,
 		Director,
 	} = movie;
+	const isWatched = watched.map((w) => w.imdbID).includes(selectedId);
+	const watchedUserRating = watched.find(
+		(w) => w.imdbID === selectedId
+	)?.userRating;
 
 	// Fetching movie info as a side-effect of a changed selectedId
 	useEffect(() => {
@@ -43,6 +55,21 @@ export const MovieInfo = ({ selectedId, onMovieClose }) => {
 		}
 		getMovieInfo();
 	}, [selectedId]);
+
+	// Handle adding movie to watched list
+	const handleAdd = () => {
+		const watchedMovie = {
+			imdbID: selectedId,
+			poster: Poster,
+			title: Title,
+			year: Year,
+			imdbRating: Number(imdbRating),
+			runtime: Number(Runtime.split(" ").at(0)),
+			userRating,
+		};
+		onAddWatched(watchedMovie);
+		onMovieClose();
+	};
 
 	return (
 		<div className="details">
@@ -69,7 +96,25 @@ export const MovieInfo = ({ selectedId, onMovieClose }) => {
 					</header>
 					<section>
 						<div className="rating">
-							<Ratings maxRating={10} size={36} />
+							{!isWatched ? (
+								<>
+									<Ratings
+										maxRating={10}
+										size={36}
+										onChangeRating={setUserRating}
+									/>
+									{userRating > 0 && (
+										<button
+											className="btn-add"
+											onClick={handleAdd}
+										>
+											Add to Watched List
+										</button>
+									)}
+								</>
+							) : (
+								<p>You rated this movie: X⭐</p>
+							)}
 						</div>
 						<p>
 							<em>{Plot}</em>

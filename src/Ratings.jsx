@@ -16,6 +16,7 @@ const Ratings = ({
 	color = "#fcc419",
 	size = 48,
 	className = "",
+	onChangeRating,
 }) => {
 	// State
 	const [rating, setRating] = useState(0);
@@ -35,7 +36,10 @@ const Ratings = ({
 				{Array.from({ length: maxRating }, (_, i) => (
 					<Star
 						key={i}
-						onRating={() => setRating(i + 1)}
+						onRating={() => {
+							setRating(i + 1);
+							onChangeRating(i + 1);
+						}}
 						isFull={
 							hoverRating ? hoverRating >= i + 1 : rating >= i + 1
 						}
