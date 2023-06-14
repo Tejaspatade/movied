@@ -56,6 +56,26 @@ export const MovieInfo = ({
 		getMovieInfo();
 	}, [selectedId]);
 
+	// Renaming the Website title as a side-effect
+	useEffect(() => {
+		if (!Title) return;
+		document.title = Title;
+		return () => (document.title = "Movied | Rate Movies You Watched");
+	}, [Title]);
+
+	// Listening to ESC keypress as a side-effect
+	useEffect(() => {
+		const callback = (e) => {
+			if (!e.code === "Escape") return;
+			onMovieClose();
+		};
+		document.addEventListener("keydown", callback);
+
+		return () => {
+			document.removeEventListener("keydown", callback);
+		};
+	}, [onMovieClose]);
+
 	// Handle adding movie to watched list
 	const handleAdd = () => {
 		const watchedMovie = {
@@ -113,7 +133,9 @@ export const MovieInfo = ({
 									)}
 								</>
 							) : (
-								<p>You rated this movie: X⭐</p>
+								<p>
+									You rated this movie: {watchedUserRating}⭐
+								</p>
 							)}
 						</div>
 						<p>

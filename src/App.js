@@ -62,7 +62,7 @@ export default function App() {
 	// State Prop Drilling
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
-	const [query, setQuery] = useState("spider-verse");
+	const [query, setQuery] = useState("");
 	const [movies, setMovies] = useState([]);
 	const [selectedId, setSelectedId] = useState(null);
 	const [watched, setWatched] = useState([]);
@@ -80,6 +80,14 @@ export default function App() {
 		setWatched((curr) => [...curr, movie]);
 	};
 
+	// Handler for removing watched movie
+	const handleRemoveWatched = (id) => {
+		setWatched((curr) => curr.filter((m) => m.imdbID !== id));
+	};
+
+	// Controller to abort unnecessary fetch requests
+	const controller = new AbortController();
+
 	// Fetching movies as a side-effect
 	useEffect(() => {
 		async function fetchMovies() {
@@ -90,7 +98,8 @@ export default function App() {
 
 				// Getting Response
 				const res = await fetch(
-					`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+					`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+					{ signal: controller.signal }
 				);
 
 				// Validating response
@@ -106,9 +115,11 @@ export default function App() {
 
 				// Store query results as movies
 				setMovies(data.Search);
+				setError("");
 			} catch (err) {
-				// Catching an error
-				setError(err.message);
+				if (err.name !== "AbortError")
+					// Catching an error
+					setError(err.message);
 			} finally {
 				// Finished loading despite of there being an error or not
 				setIsLoading(false);
@@ -122,7 +133,13 @@ export default function App() {
 		}
 
 		// Querying the API
+		handleMovieClose();
 		fetchMovies();
+
+		// Clean-up
+		return () => {
+			controller.abort();
+		};
 	}, [query]);
 
 	return (
@@ -153,7 +170,10 @@ export default function App() {
 					) : (
 						<>
 							<WatchedSummary watched={watched} />
-							<WatchedResults watched={watched} />
+							<WatchedResults
+								watched={watched}
+								onRemoveWatched={handleRemoveWatched}
+							/>
 						</>
 					)}
 				</Box>
