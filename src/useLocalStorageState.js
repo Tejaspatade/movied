@@ -9,7 +9,7 @@ export const useLocalStorageState = (initially, key) => {
 	// Store watched movies to localstorage
 	useEffect(() => {
 		localStorage.setItem(key, JSON.stringify(value));
-	}, [value]);
+	}, [value, key, initially]);
 
 	return [value, setValue];
 };

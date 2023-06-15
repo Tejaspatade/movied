@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const KEY = "8dcbdb66";
 
-export const useMovies = (query, callback) => {
+export const useMovies = (query) => {
 	// States
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -13,8 +13,6 @@ export const useMovies = (query, callback) => {
 
 	// Fetching movies as a side-effect
 	useEffect(() => {
-		callback?.();
-
 		async function fetchMovies() {
 			try {
 				// Loading & no error initially
