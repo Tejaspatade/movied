@@ -64,7 +64,7 @@ export const useMovies = (query) => {
 		return () => {
 			controller.abort();
 		};
-	}, [query]);
+	}, [query, controller]);
 
 	return { isLoading, error, movies };
 };
