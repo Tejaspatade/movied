@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { useKeyPress } from "./useKeyPress";
 
 // Search Bar
 export const SearchBar = ({ query, setQuery }) => {
+	// Reference Hook
+	const searchBar = useRef(null);
+
+	// Setting cursor in the search bar as a side-effect
+	useKeyPress("Enter", () => {
+		if (document.activeElement === searchBar.current) return;
+		searchBar.current.focus();
+		setQuery("");
+	});
+
 	return (
 		<input
 			className="search"
@@ -9,6 +20,7 @@ export const SearchBar = ({ query, setQuery }) => {
 			placeholder="Search movies..."
 			value={query}
 			onChange={(e) => setQuery(e.target.value)}
+			ref={searchBar}
 		/>
 	);
 };

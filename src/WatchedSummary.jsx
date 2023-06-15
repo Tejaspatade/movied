@@ -1,5 +1,7 @@
 import React from "react";
-import { average } from "./App";
+
+const average = (arr) =>
+	arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 // Stats of movies watched
 export const WatchedSummary = ({ watched }) => {

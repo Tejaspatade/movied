@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 import Ratings from "./Ratings";
-import { KEY, Loader } from "./App";
+import { Loader } from "./App";
+import { useKeyPress } from "./useKeyPress";
+
+const KEY = "8dcbdb66";
 
 // Selected Movie with all details
 export const MovieInfo = ({
@@ -32,6 +35,14 @@ export const MovieInfo = ({
 	const watchedUserRating = watched.find(
 		(w) => w.imdbID === selectedId
 	)?.userRating;
+
+	// Reference Hook
+	const ratingsCount = useRef(0);
+
+	// Counting No. of Ratings given by user as a side-effect
+	useEffect(() => {
+		if (userRating) ratingsCount.current += 1;
+	}, [userRating]);
 
 	// Fetching movie info as a side-effect of a changed selectedId
 	useEffect(() => {
@@ -64,17 +75,7 @@ export const MovieInfo = ({
 	}, [Title]);
 
 	// Listening to ESC keypress as a side-effect
-	useEffect(() => {
-		const callback = (e) => {
-			if (!e.code === "Escape") return;
-			onMovieClose();
-		};
-		document.addEventListener("keydown", callback);
-
-		return () => {
-			document.removeEventListener("keydown", callback);
-		};
-	}, [onMovieClose]);
+	useKeyPress("Escape", onMovieClose);
 
 	// Handle adding movie to watched list
 	const handleAdd = () => {
