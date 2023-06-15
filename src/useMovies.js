@@ -12,6 +12,7 @@ export const useMovies = (query) => {
 	const controller = new AbortController();
 
 	// Fetching movies as a side-effect
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		async function fetchMovies() {
 			try {
@@ -64,7 +65,7 @@ export const useMovies = (query) => {
 		return () => {
 			controller.abort();
 		};
-	}, [query, controller]);
+	}, [query]);
 
 	return { isLoading, error, movies };
 };
