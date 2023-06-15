@@ -8,12 +8,11 @@ export const useMovies = (query) => {
 	const [error, setError] = useState("");
 	const [movies, setMovies] = useState([]);
 
-	// Controller to abort unnecessary fetch requests
-	const controller = new AbortController();
-
 	// Fetching movies as a side-effect
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
+		// Controller to abort unnecessary fetch requests
+		const controller = new AbortController();
 		async function fetchMovies() {
 			try {
 				// Loading & no error initially
