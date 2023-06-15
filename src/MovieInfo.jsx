@@ -52,7 +52,7 @@ export const MovieInfo = ({
 
 			// Getting Response
 			const res = await fetch(
-				`http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+				`https://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
 			);
 
 			// Getting json data from response & validating it
